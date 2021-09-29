@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, UUID> {
 
-  Transaction findTopByAccountIdOrderByTimestampDesc(UUID accountId);
+  Optional<Transaction> findTopByAccountIdOrderByTimestampDesc(UUID accountId);
 
   List<Transaction> findAllByAccountId(UUID accountId);
 }

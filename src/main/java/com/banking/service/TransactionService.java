@@ -14,15 +14,19 @@ import java.util.UUID;
 public class TransactionService {
 
   private final TransactionRepository transactionRepository;
+  private final BalanceService balanceService;
 
-  public TransactionService(TransactionRepository transactionRepository) {
+  public TransactionService(TransactionRepository transactionRepository, BalanceService balanceService) {
     this.transactionRepository = transactionRepository;
+    this.balanceService = balanceService;
   }
 
   @Transactional
   public void process(SendDto sendDto, BigDecimal balance) {
-    var transactionDeduct = new Transaction(UUID.randomUUID(), sendDto.creditorId(), Instant.now(), sendDto.amount().negate(), balance);
-    BigDecimal debtorBalance = transactionRepository.findTopByAccountIdOrderByTimestampDesc(sendDto.debtorId()).getBalance();
-    var transactionAdd = new Transaction(UUID.randomUUID(), sendDto.debtorId(), Instant.now(), sendDto.amount(), debtorBalance.add(sendDto.amount()));
+    transactionRepository.save(
+      new Transaction(UUID.randomUUID(), sendDto.getCreditorId(), Instant.now(), sendDto.getAmount().negate(), balance.subtract(sendDto.getAmount())));
+    transactionRepository.save(
+      new Transaction(UUID.randomUUID(), sendDto.getDebtorId(), Instant.now(), sendDto.getAmount(),
+        balanceService.getBalance(sendDto.getDebtorId()).add(sendDto.getAmount())));
   }
 }

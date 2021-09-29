@@ -26,9 +26,8 @@ public class DataLoader implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
-    UUID accountId1 = UUID.randomUUID();
-    UUID accountId2 = UUID.randomUUID();
-    System.err.println(accountId1);
+    UUID accountId1 = UUID.fromString("19c0bb3a-221c-4254-a303-807ffd12750e");
+    UUID accountId2 = UUID.fromString("19fc08e9-a389-45a8-bb06-2cdfe7ad27e6");
     accountRepository.save(new Account(accountId1, "account1"));
     accountRepository.save(new Account(accountId2, "account2"));
     transactionRepository.save(new Transaction(UUID.randomUUID(), accountId1, Instant.now(), BigDecimal.TEN, BigDecimal.TEN));

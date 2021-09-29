@@ -10,16 +10,18 @@ import java.util.UUID;
 @Service
 public class StatementService {
 
+  private final BalanceService balanceService;
   private final TransactionRepository transactionRepository;
 
-  public StatementService(TransactionRepository transactionRepository) {
+  public StatementService(BalanceService balanceService, TransactionRepository transactionRepository) {
+    this.balanceService = balanceService;
     this.transactionRepository = transactionRepository;
   }
 
   public StatementDto generate(UUID accountId) {
-    var balance = transactionRepository.findTopByAccountIdOrderByTimestampDesc(accountId).getBalance();
-    var transactions = transactionRepository.findAllByAccountId(accountId);
-
-    return ImmutableStatementDto.builder().balance(balance).transactionList(transactions).build();
+    return ImmutableStatementDto.builder()
+      .balance(balanceService.getBalance(accountId))
+      .transactionList(
+        transactionRepository.findAllByAccountId(accountId)).build();
   }
 }

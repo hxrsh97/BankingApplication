@@ -11,7 +11,7 @@
 - Run `mvn clean package`
 - Navigate to the target folder with `cd target`
 - Run the command `java -jar BankingApplication-1.0.jar`
-- The application will now be running on localhost:8080
+- The application will now be running on `http://localhost:8080`
 
 ### Initial Data
 

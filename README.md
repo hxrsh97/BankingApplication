@@ -40,4 +40,7 @@ Account 1, the former of the IDs above, has been given an initial starting balan
 Under the `com.banking.integration` directory the test `EndToEnd` contains an automated test which uses the initial accounts to test balance transfers.
 
 It first uses the statement API to get the balance of the creditor account, then it sends half of its balance to the debtor account using the transaction API.
-Finally it checks the debtor account to see that the balance has been updated and it has a new value of the value that the creditor sent to it.
+Finally, it checks the debtor account to see that the balance has been updated and it has a new value of the value that the creditor sent to it.
+
+
+It also checks the transaction list from the creditor to check that the transaction to the debtor has been posted.

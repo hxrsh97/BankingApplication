@@ -76,5 +76,25 @@ public class EndToEnd {
       .isEqualTo(new BigDecimal("5.0"))
       .jsonPath("$.transactionList[0].balance")
       .isEqualTo(new BigDecimal("5.0"));
+
+    webTestClient
+      .get()
+      .uri(statementUri + UUID.fromString("19c0bb3a-221c-4254-a303-807ffd12750e"))
+      .exchange()
+      .expectStatus()
+      .isOk()
+      .expectBody()
+      .jsonPath("$.balance")
+      .isEqualTo(new BigDecimal("5.0"))
+      .jsonPath("$.transactionList[1].transactionId")
+      .exists()
+      .jsonPath("$.transactionList[1].accountId")
+      .isEqualTo("19c0bb3a-221c-4254-a303-807ffd12750e")
+      .jsonPath("$.transactionList[1].timestamp")
+      .exists()
+      .jsonPath("$.transactionList[1].value")
+      .isEqualTo(new BigDecimal("-5.0"))
+      .jsonPath("$.transactionList[1].balance")
+      .isEqualTo(new BigDecimal("5.0"));
   }
 }

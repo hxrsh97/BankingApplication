@@ -4,7 +4,6 @@ import com.banking.db.AccountRepository;
 import com.banking.db.TransactionRepository;
 import com.banking.model.Account;
 import com.banking.model.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -31,6 +30,5 @@ public class DataLoader implements ApplicationRunner {
     accountRepository.save(new Account(accountId1, "account1"));
     accountRepository.save(new Account(accountId2, "account2"));
     transactionRepository.save(new Transaction(UUID.randomUUID(), accountId1, Instant.now(), BigDecimal.TEN, BigDecimal.TEN));
-    transactionRepository.save(new Transaction(UUID.randomUUID(), accountId2, Instant.now(), BigDecimal.TEN, BigDecimal.TEN));
   }
 }

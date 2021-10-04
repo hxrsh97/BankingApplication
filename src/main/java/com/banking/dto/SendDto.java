@@ -1,43 +1,20 @@
 package com.banking.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.immutables.value.Value;
+
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.UUID;
 
-public class SendDto {
+@Value.Immutable
+@JsonDeserialize(as = ImmutableSendDto.class)
+@JsonSerialize(as = ImmutableSendDto.class)
+public interface SendDto {
 
-  private final UUID creditorId;
-  private final UUID debtorId;
-  private final BigDecimal amount;
+  UUID creditorId();
 
-  public SendDto(UUID creditorId, UUID debtorId, BigDecimal amount) {
-    this.creditorId = creditorId;
-    this.debtorId = debtorId;
-    this.amount = amount;
-  }
+  UUID debtorId();
 
-  public UUID getCreditorId() {
-    return creditorId;
-  }
-
-  public UUID getDebtorId() {
-    return debtorId;
-  }
-
-  public BigDecimal getAmount() {
-    return amount;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    SendDto sendDto = (SendDto) o;
-    return creditorId.equals(sendDto.creditorId) && debtorId.equals(sendDto.debtorId) && amount.equals(sendDto.amount);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(creditorId, debtorId, amount);
-  }
+  BigDecimal amount();
 }

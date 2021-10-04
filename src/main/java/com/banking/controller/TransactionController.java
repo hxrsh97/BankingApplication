@@ -1,7 +1,7 @@
 package com.banking.controller;
 
-import com.banking.db.AccountRepository;
 import com.banking.dto.SendDto;
+import com.banking.service.AccountService;
 import com.banking.service.BalanceService;
 import com.banking.service.TransactionService;
 import org.springframework.http.HttpStatus;
@@ -19,29 +19,28 @@ import java.math.BigDecimal;
 @RequestMapping("/api/v1/transaction")
 public class TransactionController {
 
-  private final AccountRepository accountRepository;
+  private final AccountService accountService;
   private final BalanceService balanceService;
   private final TransactionService transactionService;
 
-  public TransactionController(AccountRepository accountRepository, BalanceService balanceService, TransactionService transactionService) {
-    this.accountRepository = accountRepository;
+  public TransactionController(AccountService accountService, BalanceService balanceService, TransactionService transactionService) {
+    this.accountService = accountService;
     this.balanceService = balanceService;
     this.transactionService = transactionService;
   }
 
   @PostMapping(value = "/send", consumes = {MediaType.APPLICATION_JSON_VALUE})
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseStatus(HttpStatus.OK)
   public void send(@RequestBody SendDto sendDto) {
-    accountRepository.findById(sendDto.getCreditorId()).ifPresentOrElse(account -> {
-        BigDecimal balance = balanceService.getBalance(sendDto.getCreditorId());
-        if (balance.subtract(sendDto.getAmount()).signum() >= 0) {
-          transactionService.process(sendDto, balance);
-        } else {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creditor account balance is insufficient");
-        }
-      },
-      () -> {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creditor account does not exist");
-      });
+    if (accountService.checkExists(sendDto.creditorId())) {
+      BigDecimal creditorBalance = balanceService.getBalance(sendDto.creditorId());
+      if (creditorBalance.subtract(sendDto.amount()).signum() >= 0) {
+        transactionService.process(sendDto, creditorBalance);
+      } else {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creditor account balance is insufficient");
+      }
+    } else {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Creditor account does not exist");
+    }
   }
 }

@@ -22,11 +22,11 @@ public class TransactionService {
   }
 
   @Transactional
-  public void process(SendDto sendDto, BigDecimal balance) {
+  public void process(SendDto sendDto, BigDecimal creditorBalance) {
     transactionRepository.save(
-      new Transaction(UUID.randomUUID(), sendDto.getCreditorId(), Instant.now(), sendDto.getAmount().negate(), balance.subtract(sendDto.getAmount())));
+      new Transaction(UUID.randomUUID(), sendDto.creditorId(), Instant.now(), sendDto.amount().negate(), creditorBalance.subtract(sendDto.amount())));
     transactionRepository.save(
-      new Transaction(UUID.randomUUID(), sendDto.getDebtorId(), Instant.now(), sendDto.getAmount(),
-        balanceService.getBalance(sendDto.getDebtorId()).add(sendDto.getAmount())));
+      new Transaction(UUID.randomUUID(), sendDto.debtorId(), Instant.now(), sendDto.amount(),
+        balanceService.getBalance(sendDto.debtorId()).add(sendDto.amount())));
   }
 }
